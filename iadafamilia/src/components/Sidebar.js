@@ -9,6 +9,7 @@ import logoprefeitura from '../img/logoprefeitura.png';
 const Sidebar = ({ onQuestionClick }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isNewsExpanded, setIsNewsExpanded] = useState(false);
+    const [chats, setChats] = useState([]);
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -19,10 +20,26 @@ const Sidebar = ({ onQuestionClick }) => {
         setIsNewsExpanded(!isNewsExpanded);
     };
 
+    const handleAddChat = () => {
+        const newId = chats.length > 0 ? chats[chats.length - 1].id + 1 : 1;
+        const newChat = { id: newId, title: `Chat ${newId}` };
+        setChats(prevChats => [...prevChats, newChat]);
+        
+        // precisa do back aqui
+        // fetch('/api/chats', { method: 'POST', body: JSON.stringify(newChat) });
+    };
+
+    const handleRemoveChat = (id) => {
+        setChats(prevChats => prevChats.filter(chat => chat.id !== id));
+
+        // Precisa do Back aqui
+        // fetch(`/api/chats/${id}`, { method: 'DELETE' });
+    };
+
     return (
         <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
             <div className={`sidebar-header ${isCollapsed ? 'collapsed' : ''}`}>
-                <IconButton>
+                <IconButton onClick={handleAddChat}>
                     <AddCircleIcon sx={{ color: 'var(--azul)' }} />
                 </IconButton>
                 <IconButton onClick={toggleSidebar}>
@@ -33,37 +50,57 @@ const Sidebar = ({ onQuestionClick }) => {
                     )}
                 </IconButton>
             </div>
+
             {!isCollapsed && (
                 <>
                     <div className="sidebar-content">
                         <h3 style={{ fontFamily: 'var(--font-titles)' }}>Seus Chats</h3>
                         <ul>
-                            <li style={{ fontFamily: 'var(--font-body)' }}>Chat 1</li>
-                            <li style={{ fontFamily: 'var(--font-body)' }}>Chat 2</li>
-                        </ul>
-                        <h3 style={{ fontFamily: 'var(--font-titles)', marginTop: '20px' }}>Perguntas Frequentes</h3>
-                        <ul>
-                            <li
-                                style={{ fontFamily: 'var(--font-body)', cursor: 'pointer' }}
-                                onClick={() => onQuestionClick('Como posso marcar uma consulta?')}
-                            >
-                                Como posso marcar uma consulta?
-                            </li>
-                            <li
-                                style={{ fontFamily: 'var(--font-body)', cursor: 'pointer' }}
-                                onClick={() => onQuestionClick('Remédios para dor de cabeça')}
-                            >
-                                Remédios para dor de cabeça
-                            </li>
-                            <li
-                                style={{ fontFamily: 'var(--font-body)', cursor: 'pointer' }}
-                                onClick={() => onQuestionClick('Qual o procedimento para exames de sangue?')}
-                            >
-                                Qual o procedimento para exames de sangue?
-                            </li>
+                            {chats.map((chat) => (
+                                <li 
+                                    key={chat.id} 
+                                    className="chat-item" 
+                                    style={{ fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                                >
+                                    {chat.title}
+                                    <IconButton
+                                        onClick={() => handleRemoveChat(chat.id)}
+                                        size="small"
+                                        className="remove-chat-button"
+                                        sx={{ color: 'red' }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                </li>
+                            ))}
                         </ul>
                     </div>
+
                     <div className="sidebar-footer">
+                        <div className="faq-container">
+                            <h3 style={{ fontFamily: 'var(--font-titles)' }}>Perguntas Frequentes</h3>
+                            <ul>
+                                <li
+                                    style={{ fontFamily: 'var(--font-body)', cursor: 'pointer' }}
+                                    onClick={() => onQuestionClick('Como posso marcar uma consulta?')}
+                                >
+                                    Como posso marcar uma consulta?
+                                </li>
+                                <li
+                                    style={{ fontFamily: 'var(--font-body)', cursor: 'pointer' }}
+                                    onClick={() => onQuestionClick('Remédios para dor de cabeça')}
+                                >
+                                    Remédios para dor de cabeça
+                                </li>
+                                <li
+                                    style={{ fontFamily: 'var(--font-body)', cursor: 'pointer' }}
+                                    onClick={() => onQuestionClick('Qual o procedimento para exames de sangue?')}
+                                >
+                                    Qual o procedimento para exames de sangue?
+                                </li>
+                            </ul>
+                        </div>
+
                         <div className={`noticias-container ${isNewsExpanded ? 'expanded' : ''}`} onClick={toggleNews}>
                             {!isNewsExpanded ? (
                                 <div className="noticias-button">Notícias</div>
@@ -85,8 +122,9 @@ const Sidebar = ({ onQuestionClick }) => {
                                 </div>
                             )}
                         </div>
+
                         <div className='logo'>
-                            <img src={logoprefeitura} alt='Logo da Prefeitura' className='logo-prefeitura' width={"240px"}></img>
+                            <img src={logoprefeitura} alt='Logo da Prefeitura' className='logo-prefeitura' width={"240px"} />
                         </div>
                     </div>
                 </>

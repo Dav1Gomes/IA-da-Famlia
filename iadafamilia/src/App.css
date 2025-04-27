@@ -381,6 +381,15 @@ footer button:hover {
     width: 100%;
 }
 
+body.dark-mode .noticias-button {
+    background-color: #2783FF;
+    color: white;
+}
+
+body.dark-mode .noticias-button:hover {
+   background-color: var(--laranja);
+}
+
 .noticias-button:hover {
     transform: scale(1.05);
 }
@@ -415,4 +424,25 @@ footer button:hover {
 .logo {
     text-align: center;
     padding: 10px 0;
+}
+
+.chat-item .remove-chat-button {
+    visibility: hidden;
+    transition: visibility 0.2s ease;
+}
+
+.chat-item:hover .remove-chat-button {
+    visibility: visible;
+}
+
+.faq-container {
+    margin-bottom: 20px;
+}
+
+.faq-container ul {
+    padding-left: 15px;
+}
+
+.noticias-container {
+    margin-bottom: 20px;
 }
