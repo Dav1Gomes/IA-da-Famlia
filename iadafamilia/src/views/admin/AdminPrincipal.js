@@ -1,14 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import PublishIcon from '@mui/icons-material/Publish';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
 import logoprefeitura from '../../img/logoprefeitura.png';
 import SplitText from '../../components/SplitText';
 import '../../styles/admin/AdminPrincipal.css';
 
 const AdminPrincipal = () => {
     const navigate = useNavigate();
+    const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+    const abrirDialogLogout = () => {
+        setLogoutDialogOpen(true);
+    };
+
+    const confirmarLogout = () => {
+        // Limpar sessionStorage e localStorage 
+        sessionStorage.clear();
+        localStorage.clear();
+
+        // Fechar o Dialog
+        setLogoutDialogOpen(false);
+
+        // Redirecionar para a página inicial
+        navigate('/');
+    };
+
+    const cancelarLogout = () => {
+        setLogoutDialogOpen(false);
+    };
 
     return (
         <div className="admin-container">
@@ -25,6 +48,10 @@ const AdminPrincipal = () => {
                 rootMargin="-50px"
                 onLetterAnimationComplete={() => console.log("Animação concluída!")}
               />
+              <button className="logout-button" onClick={abrirDialogLogout}>
+                <LogoutIcon className="logout-icon" />
+                Logout
+              </button>
             </div>
 
             <div className="admin-menu">
@@ -41,6 +68,20 @@ const AdminPrincipal = () => {
                     <span className="menu-label">Lançar Conteúdo</span>
                 </div>
             </div>
+
+            <Dialog
+                open={logoutDialogOpen}
+                onClose={cancelarLogout}
+            >
+                <DialogTitle>Confirmar Logout</DialogTitle>
+                <DialogContent>
+                    <Typography>Tem certeza que deseja sair?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={cancelarLogout}>Cancelar</Button>
+                    <Button onClick={confirmarLogout} sx={{ color: 'var(--vermelho)' }}>Sair</Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

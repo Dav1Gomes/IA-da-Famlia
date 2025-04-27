@@ -1,78 +1,92 @@
 .admin-container {
-  background-color: white;
-  height: 100vh;
-  padding: 20px;
+  background-color: var(--white);
+  min-height: 100vh;
+  padding: 30px;
 }
 
 .admin-header {
   display: flex;
   align-items: center;
-  gap: 40px;
-  border-bottom: 2px solid #19ccb2;
+  gap: 30px;
+  border-bottom: 2px solid var(--verde-agua);
   padding-bottom: 20px;
   margin-bottom: 40px;
 }
 
 .admin-greeting {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
-  color: #333;
+  color: var(--preto);
 }
 
-.logo-placeholder {
-  width: 200px;
-  height: 60px;
-  background-color: #eee;
-  border: 1px dashed #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: #aaa;
+.logo-prefeitura {
+  height: 80px;
+  object-fit: contain;
 }
 
 .admin-menu {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: center;
   gap: 40px;
-  flex-wrap: nowrap; 
+  flex-wrap: wrap;
+  margin-top: 40px;
 }
 
 .menu-button {
-  background-color: white;
-  border: 3px solid #19ccb2;
-  border-radius: 20px;
-  width: 300px;
-  height: 300px;
+  background-color: var(--white);
+  border: 2px solid var(--verde-agua);
+  border-radius: 16px;
+  width: 280px;
+  height: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .menu-button:hover {
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  background-color: var(--white);
 }
 
 .menu-icon {
-  font-size: 150px !important; 
-  color: #19ccb2;
-  margin-bottom: 15px;
-  display: block;
+  font-size: 120px !important;
+  color: var(--verde-agua);
+  margin-bottom: 20px;
 }
 
 .menu-label {
-  font-size: 28px;
-  color: #333;
-  font-weight: 500;
+  font-size: 24px;
+  color: var(--black);
+  font-weight: 600;
   text-align: center;
 }
 
-.logo-prefeitura {
-  height: 100px; 
-  object-fit: contain;
+.logout-button {
+  margin-left: auto;
+  background-color: transparent;
+  color: var(--vermelho);
+  border: 2px solid var(--vermelho);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
+.logout-button:hover {
+  background-color: var(--vermelho);
+  color: var(--white);
+  border-color: var(--vermelho);
+}
+
+.logout-icon {
+  font-size: 20px !important;
+}

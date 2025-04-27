@@ -1,5 +1,5 @@
 :root {
-    --verde-agua: #202322;
+    --verde-agua: #86d2d1;
     --verde: #b6f261;
     --vermelho: #f15b5b;
     --preto: #231f20;
@@ -15,7 +15,7 @@
 
     --bg-color: var(--white);
     --text-color: var(--preto);
-    --navbar-color: var(--verde-agua);
+    --navbar-color: var(--preto);
     --sidebar-bg: var(--azul-claro);
     --chatarea-bg: var(--white);
     --footer-bg: var(--white);

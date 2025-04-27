@@ -1,0 +1,106 @@
+:root {
+    --verde-agua: #19ccb2;
+    --verde: #b6f261;
+    --vermelho: #f15b5b;
+    --preto: #333;
+    --cinza: #636466;
+  
+    --azul-claro: #6cb4e3;
+    --laranja: #f58220;
+    --roxo: #673074;
+    --amarelo: #fdb91a;
+  
+    --white: #FFFFFF;
+    --black: #000000;
+  }
+  
+  body {
+    background-color: var(--verde-agua);
+    color: var(--white);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+  
+  button {
+    background-color: var(--verde);
+    color: var(--black);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: var(--azul-claro);
+  }
+  
+  input, select, textarea {
+    background-color: var(--preto);
+    color: var(--white);
+    border: 1px solid var(--cinza);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+  
+  .card {
+    background-color: var(--preto);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--preto);
+  }
+  
+  th, td {
+    border: 1px solid var(--cinza);
+    padding: 12px;
+    text-align: left;
+    color: var(--white);
+  }
+  
+  th {
+    background-color: var(--verde-agua);
+  }
+  
+  a {
+    color: var(--verde);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: var(--laranja);
+  }
+  
+  .button-voltar {
+    background-color: transparent;
+    color: var(--verde-agua);
+    padding: 10px 20px;
+    border: 2px solid var(--verde-agua);
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+  
+  .button-voltar:hover {
+    background-color: var(--roxo);
+    color: var(--white);
+    border-color: var(--roxo);
+  }
+  
