@@ -11,6 +11,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useNavigate } from "react-router-dom";
+import {getAuth} from "../util/RequireAuth.js"
 
 const Navbar = ({ onToggleDarkMode, onFontSizeChange }) => {
   const [open, setOpen] = useState(false);
@@ -33,7 +34,8 @@ const Navbar = ({ onToggleDarkMode, onFontSizeChange }) => {
     }
   };
 
-  const handleLogout = () => navigate("/login");
+  //Caso o usuário já esteja logado ele vai direto para a página admin
+  const handleLogout = () => getAuth() ? navigate("/admin") : navigate("/login");
 
   return (
     <nav className="navbar">
