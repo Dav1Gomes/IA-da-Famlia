@@ -12,6 +12,7 @@ const LoginPage = () => {
         e.preventDefault();
     
         if (email === 'admin' && password === 'admin') {
+            sessionStorage.setItem('authToken', 'true');
             navigate('/admin');
             return;
         }
@@ -24,6 +25,7 @@ const LoginPage = () => {
             });
     
             if (response.ok) {
+                sessionStorage.setItem('authToken', 'true');
                 navigate('/home');
             } else {
                 const data = await response.json();

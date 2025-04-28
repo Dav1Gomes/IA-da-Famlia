@@ -9,6 +9,7 @@ import GestaoIA from './views/admin/GestaoIA';
 import GraficosRelatorios from './views/admin/GraficosRelatorios';
 import LancarConteudo from './views/admin/LancamentoConteudo';
 import './App.css';
+import RequiredAuth from './util/RequireAuth.js';
 
 function App() {
     const [darkMode, setDarkMode] = useState(false);
@@ -44,10 +45,26 @@ function App() {
                             />
                         }
                     />
-                    <Route path="/admin" element={<AdminPrincipal />} />
-                    <Route path="/admin/gestao-ia" element={<GestaoIA />} />
-                    <Route path="/admin/graficos" element={<GraficosRelatorios />} />
-                    <Route path="/admin/lancar-conteudo" element={<LancarConteudo />} />
+                    <Route path="/admin" element={
+                        <RequiredAuth redirectTo="/login">
+                            <AdminPrincipal />
+                        </RequiredAuth>} 
+                    />
+                    <Route path="/admin/gestao-ia" element={
+                        <RequiredAuth redirectTo="/login">
+                            <GestaoIA />
+                        </RequiredAuth>} 
+                    />
+                    <Route path="/admin/graficos" element={
+                        <RequiredAuth redirectTo="/login">
+                            <GraficosRelatorios />
+                        </RequiredAuth>} 
+                    />
+                    <Route path="/admin/lancar-conteudo" element={
+                        <RequiredAuth redirectTo="/login">
+                            <LancarConteudo />
+                        </RequiredAuth>} 
+                    />
                 </Routes>
             </div>
         </Router>
