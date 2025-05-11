@@ -26,7 +26,7 @@ const LoginPage = () => {
     
             if (response.ok) {
                 sessionStorage.setItem('authToken', 'true');
-                navigate('/home');
+                navigate('/admin');
             } else {
                 const data = await response.json();
                 alert(data.message || 'Erro ao fazer login.');
