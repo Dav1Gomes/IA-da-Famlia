@@ -5,7 +5,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PublishIcon from '@mui/icons-material/Publish';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography } from '@mui/material';
-import logoprefeitura from '../../img/logoprefeitura.png';
+import logoprefeitura from '../../img/logoprefeitura2.png';
 import SplitText from '../../components/SplitText';
 import '../../styles/admin/AdminPrincipal.css';
 

@@ -60,7 +60,7 @@ const GraficosRelatorios = () => {
         <Button className="button-voltar" onClick={() => navigate('/admin')}>
           Voltar
         </Button>
-        <img src={require('../../img/logoprefeitura.png')} alt="Logo Prefeitura" className="footer-logo" />
+        <img src={require('../../img/logoprefeitura2.png')} alt="Logo Prefeitura" className="footer-logo" />
       </footer>
     </Box>
   );

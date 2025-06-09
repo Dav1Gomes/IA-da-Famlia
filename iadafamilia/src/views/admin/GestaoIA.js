@@ -139,7 +139,7 @@ const GestaoIA = () => {
           Voltar
         </Button>
         <img
-          src={require("../../img/logoprefeitura.png")}
+          src={require("../../img/logoprefeitura2.png")}
           alt="Logo Prefeitura"
           className="footer-logo"
         />
