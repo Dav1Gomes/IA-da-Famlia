@@ -18,14 +18,13 @@ const AdminPrincipal = () => {
     };
 
     const confirmarLogout = () => {
-        // Limpar sessionStorage e localStorage 
         sessionStorage.clear();
         localStorage.clear();
 
-        // Fechar o Dialog
+        
         setLogoutDialogOpen(false);
 
-        // Redirecionar para a página inicial
+        
         navigate('/');
     };
 

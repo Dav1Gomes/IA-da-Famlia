@@ -25,13 +25,24 @@ const ChatArea = forwardRef(({ fontSize }, ref) => {
         }, 1000);
     };
 
-    const handleUserMessage = (userMessage) => {
-        addMessage(userMessage, 'user');
-        setTimeout(() => {
-            const botResponse = `Resposta do bot para: "${userMessage}" - Esta é uma resposta simulada.`;
-            addMessage(botResponse, 'bot');
-        }, 1000);
-    };
+    const handleUserMessage = async (userMessage) => {
+    addMessage(userMessage, 'user');
+    try {
+        const response = await fetch('http://localhost:5001/api/detect_intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userMessage }),
+        });
+        if (response.ok) {
+            const data = await response.json();
+            addMessage(data.response, 'bot');
+        } else {
+            addMessage('Desculpe, houve um erro ao processar sua mensagem.', 'bot');
+        }
+    } catch (error) {
+        addMessage('Erro de conexão com o servidor do chatbot.', 'bot');
+    }
+};
 
     useImperativeHandle(ref, () => ({
         handleQuestionClick,

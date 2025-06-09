@@ -1,0 +1,6 @@
+torch==2.1.2
+torchvision==0.16.2
+transformers==4.35.2
+accelerate==0.25.0
+chatterbot==1.1.0
+flask==2.3.2
