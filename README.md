@@ -19,7 +19,7 @@
 
 ---
 
-##**Fases do Projeto**  
+## **Fases do Projeto**  
 
 ### **『 Fase 1 / 2024 』**
 ✔ Desenvolver uma **interface acessível** e funcional.  
@@ -33,23 +33,23 @@
 
 ## 🚀 **Tecnologias Utilizadas**  
 
-### 📌 **Frontend** (Interface do usuário)  
+### **Frontend** (Interface do usuário)  
 🔹 ![React](https://img.shields.io/badge/React-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=black)  
 🔹 ![Material UI](https://img.shields.io/badge/Material%20UI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)  
 🔹 ![React Router](https://img.shields.io/badge/React%20Router-%23CA4245.svg?style=for-the-badge&logo=react-router&logoColor=white)  
 
-### 📌 **Backend** (Servidor e API)  
+### **Backend** (Servidor e API)  
 🔹 ![Node.js](https://img.shields.io/badge/Node.js-%23339933.svg?style=for-the-badge&logo=node.js&logoColor=white)  
 🔹 ![Express](https://img.shields.io/badge/Express.js-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)  
 🔹 ![SQLite](https://img.shields.io/badge/SQLite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)  
 🔹 ![Bcrypt](https://img.shields.io/badge/Bcrypt-%2300A5E0.svg?style=for-the-badge)  
 🔹 ![Dotenv](https://img.shields.io/badge/Dotenv-%23E34F26.svg?style=for-the-badge)  
 
-### 📌 **Inteligência Artificial**  
+### **Inteligência Artificial**  
 🔹 ![Dialogflow](https://img.shields.io/badge/Dialogflow-%23FF9800.svg?style=for-the-badge&logo=dialogflow&logoColor=white)  
 🔹 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white) *(Fase 2)*  
 
-### 📌 **Comunicação**  
+### **Comunicação**  
 🔹 ![Twilio](https://img.shields.io/badge/Twilio-%23F22F46.svg?style=for-the-badge&logo=twilio&logoColor=white) *(WhatsApp - Fase 2)*  
 🔹 ![Telegram](https://img.shields.io/badge/Telegram%20Bot-%2326A5E4.svg?style=for-the-badge&logo=telegram&logoColor=white) *(Fase 2)*  
 
