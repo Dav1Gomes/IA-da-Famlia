@@ -28,7 +28,7 @@ const ChatArea = forwardRef(({ fontSize }, ref) => {
     const handleUserMessage = async (userMessage) => {
     addMessage(userMessage, 'user');
     try {
-        const response = await fetch('http://localhost:5001/api/detect_intent', {
+        const response = await fetch('http://localhost:5000/api/detect_intent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userMessage }),
