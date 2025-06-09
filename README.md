@@ -67,17 +67,23 @@ cd iadafamilia
 ```bash
 cd iadafamilia
 npm install
-npm run start
+
 ``` 
 O frontend será iniciado em http://localhost:3000/home
 
 ### **3️⃣ Configurar o Backend**
 ``` bash
-cd backend
+cd iadafamilia/backend
 npm install
-node server.js
 ```
 O backend rodará em http://localhost:5000/
+
+### **4️⃣ Rodar o projeto**
+``` bash
+cd iadafamilia
+npm run dev
+```
+Esse comando irá rodar o frontend, backend e o chatbot.
 
 ---
 
