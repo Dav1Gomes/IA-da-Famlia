@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import ChatArea from '../components/ChatArea';
 
 const HomePage = ({ onToggleDarkMode, onFontSizeChange, fontSize }) => {
     const chatAreaRef = useRef(null);
+    const [selectedChatId, setSelectedChatId] = useState(null);
 
     const handleSendMessage = (message) => {
         if (chatAreaRef.current) {
@@ -29,11 +30,16 @@ const HomePage = ({ onToggleDarkMode, onFontSizeChange, fontSize }) => {
                 onFontSizeChange={onFontSizeChange}
             />
             <div className="main-container">
-                <Sidebar onQuestionClick={handleQuestionClick} />
+                <Sidebar
+                    onQuestionClick={handleQuestionClick}
+                    selectedChatId={selectedChatId}
+                    setSelectedChatId={setSelectedChatId}
+                />
                 <div className="chat-container">
                     <ChatArea
                         ref={chatAreaRef}
                         fontSize={fontSize}
+                        chatId={selectedChatId}
                     />
                     <footer className="chat-footer">
                         <input

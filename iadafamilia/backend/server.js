@@ -56,6 +56,15 @@ app.post('/api/chats', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+app.delete('/api/chats/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await db.query('DELETE * FROM chats WHERE id = $1', [id]);
+        res.status(200).json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 app.put('/api/chats/:id', async (req, res) => {
     const { id } = req.params;
