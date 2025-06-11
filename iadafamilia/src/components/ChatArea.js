@@ -1,8 +1,9 @@
 import React, { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 
-const ChatArea = forwardRef(({ fontSize }, ref) => {
-    const [messages, setMessages] = useState([]);
+const ChatArea = forwardRef(({ fontSize, chatId }, ref) => {
+    const [chatMessages, setChatMessages] = useState({});
     const messagesEndRef = useRef(null);
+    const messages = chatMessages[chatId] || [];
 
     const botResponses = {
         'Como posso marcar uma consulta?': 'Você pode marcar uma consulta pelo nosso aplicativo ou pelo telefone 0800-123-456.',
@@ -11,7 +12,7 @@ const ChatArea = forwardRef(({ fontSize }, ref) => {
     };
 
     const addMessage = (text, sender) => {
-        setMessages((prev) => [...prev, { text, sender }]);
+        setChatMessages(prev => ({ ...prev, [chatId]: [...(prev[chatId] || []), { text, sender }],}));
         scrollToBottom();
     };
 

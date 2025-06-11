@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -6,10 +6,11 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
 import logoprefeitura from '../img/logoprefeitura.png';
 
-const Sidebar = ({ onQuestionClick }) => {
+const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isNewsExpanded, setIsNewsExpanded] = useState(false);
     const [chats, setChats] = useState([]);
+    const userId = sessionStorage.getItem('userId');
 
     const toggleSidebar = () => {
         setIsCollapsed(!isCollapsed);
@@ -25,16 +26,28 @@ const Sidebar = ({ onQuestionClick }) => {
         const newChat = { id: newId, title: `Chat ${newId}` };
         setChats(prevChats => [...prevChats, newChat]);
         
-        // precisa do back aqui
-        // fetch('/api/chats', { method: 'POST', body: JSON.stringify(newChat) });
+        fetch('/api/chats', { method: 'POST', body: JSON.stringify({ user_id: userId, title: newChat.title }) });
     };
 
     const handleRemoveChat = (id) => {
         setChats(prevChats => prevChats.filter(chat => chat.id !== id));
 
-        // Precisa do Back aqui
-        // fetch(`/api/chats/${id}`, { method: 'DELETE' });
+        fetch(`/api/chats/${id}`, { method: 'DELETE' });
     };
+
+    useEffect(() => {
+        if (chats.length === 0) {
+            const initialChat = { id: 1, title: 'Chat 1' };
+            setChats([initialChat]);
+            setSelectedChatId(1);
+
+            fetch('/api/chats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userId, title: initialChat.title })
+            });
+        }
+    }, []);
 
     return (
         <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -59,12 +72,16 @@ const Sidebar = ({ onQuestionClick }) => {
                             {chats.map((chat) => (
                                 <li 
                                     key={chat.id} 
-                                    className="chat-item" 
+                                    onClick={() => setSelectedChatId(chat.id)} 
+                                    className={`chat-item ${selectedChatId === chat.id ? 'selected' : ''}`}
                                     style={{ fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
                                 >
                                     {chat.title}
                                     <IconButton
-                                        onClick={() => handleRemoveChat(chat.id)}
+                                        onClick={(e) =>{
+                                            e.stopPropagation();
+                                            handleRemoveChat(chat.id);
+                                        }}
                                         size="small"
                                         className="remove-chat-button"
                                         sx={{ color: 'red' }}

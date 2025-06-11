@@ -25,7 +25,9 @@ const LoginPage = () => {
             });
     
             if (response.ok) {
+                const data = await response.json();
                 sessionStorage.setItem('authToken', 'true');
+                sessionStorage.setItem('userId', data.userId);
                 navigate('/admin');
             } else {
                 const data = await response.json();
