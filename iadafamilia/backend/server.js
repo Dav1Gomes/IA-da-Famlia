@@ -59,7 +59,7 @@ app.post('/api/chats', async (req, res) => {
 app.delete('/api/chats/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const result = await db.query('DELETE * FROM chats WHERE id = $1', [id]);
+        const result = await db.query('DELETE  FROM chats WHERE id = $1', [id]);
         res.status(200).json(result.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -102,6 +102,47 @@ app.get('/api/chats/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+app.post('/api/faq', (req, res) => {
+    const { pergunta, resposta } = req.body;
+
+    const query = `INSERT INTO faq (pergunta, resposta) VALUES (?, ?)`;
+
+    db.run(query, [pergunta, resposta], function (err) {
+        if (err) {
+            console.error('Erro ao adicionar FAQ:', err.message);
+            return res.status(500).json({ message: 'Erro ao registrar FAQ.' });
+        }
+        res.status(201).json({ id: this.lastID, pergunta, resposta });
+    });
+});
+
+
+app.get('/api/faq',  async (req, res) => {
+  db.all(`SELECT * FROM faq ORDER BY id ASC`, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar FAQs:', err.message);
+      return res.status(500).json({ message: 'Erro ao buscar FAQs.' });
+    }
+    res.status(200).json(rows);
+  });
+});
+
+app.delete('/api/faq/:id',  async (req, res) => {
+  const { id } = req.params;
+  console.log('Mensagem de id:', id);
+
+  db.run(`DELETE FROM faq WHERE id = ?`, [id], function (err) {
+    if (err) {
+      console.error('Erro ao excluir FAQ:', err.message);
+      return res.status(500).json({ message: 'Erro ao excluir FAQ.' });
+    }
+    console.log(`Mensagem de id: ${id} excluida com sucesso!`);
+    res.status(200).json({ message: 'FAQ excluída com sucesso.' });
+  });
+});
+
+
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
