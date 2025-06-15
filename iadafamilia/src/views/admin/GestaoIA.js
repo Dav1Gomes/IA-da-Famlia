@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -19,17 +19,22 @@ import "../../styles/admin/GestaoIA.css";
 
 const GestaoIA = () => {
   const navigate = useNavigate();
-  const [faq, setFaq] = useState([
-    {
-      pergunta: "Como marcar consulta?",
-      resposta:
-        "Você pode marcar consulta pelo app do SUS ou indo à UBS mais próxima.",
-    },
-    {
-      pergunta: "Quais vacinas estão disponíveis?",
-      resposta: "Consulte a lista atualizada no site da sua prefeitura.",
-    },
-  ]);
+  const [faq, setFaq] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:5001/api/faq')
+      .then(res => res.json())
+      .then(data => {
+        setFaq(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("Erro ao carregar FAQs:", error);
+        setLoading(false);
+      });
+  }, []);
+
   const [novaPergunta, setNovaPergunta] = useState("");
   const [novaResposta, setNovaResposta] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -43,6 +48,11 @@ const GestaoIA = () => {
       setOpenSnackbar(true);
       return;
     }
+    
+    fetch('http://localhost:5001/api/faq', {
+      method: 'POST', headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({ pergunta: novaPergunta, resposta: novaResposta })
+    });
 
     setFaq([...faq, { pergunta: novaPergunta, resposta: novaResposta }]);
     setNovaPergunta("");
@@ -58,14 +68,26 @@ const GestaoIA = () => {
 
   const confirmarExclusao = () => {
     if (faqToDelete !== null) {
-      const novaLista = [...faq];
-      novaLista.splice(faqToDelete, 1);
-      setFaq(novaLista);
-      setSnackbarMessage("Pergunta excluída com sucesso!");
-      setOpenSnackbar(true);
+      const faqId = faq[faqToDelete].id;
+      fetch(`http://localhost:5001/api/faq/${faqId}`, { method: 'DELETE' })
+        .then((resp) =>{
+          if(!resp.ok) throw new Error('Erro na resposta do servidor');
+
+          const novaLista = [...faq];
+          novaLista.splice(faqToDelete, 1);
+          setFaq(novaLista);
+          setSnackbarMessage("Pergunta excluída com sucesso!");
+          setOpenSnackbar(true);
+          setDialogOpen(false);
+          setFaqToDelete(null);
+        })
+        .catch(()=>{
+          setSnackbarMessage("Erro ao excluir pergunta!");
+          setOpenSnackbar(true);
+          setDialogOpen(false);
+          setFaqToDelete(null);
+        });
     }
-    setDialogOpen(false);
-    setFaqToDelete(null);
   };
 
   const cancelarExclusao = () => {

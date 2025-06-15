@@ -18,18 +18,36 @@ db.serialize(() => {
             password TEXT NOT NULL
         )
     `);
-});
+    
+    db.run(`
+        CREATE TABLE IF NOT EXISTS chats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            messages TEXT DEFAULT '[]', -- Armazena mensagens como JSON
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+            )
+        `);
 
-db.run(`
-    CREATE TABLE IF NOT EXISTS chats (
+    db.run(`
+        CREATE TABLE IF NOT EXISTS conteudos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        title TEXT NOT NULL,
-        messages TEXT DEFAULT '[]', -- Armazena mensagens como JSON
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-    )
-`);
+        titulo TEXT NOT NULL,
+        descricao TEXT NOT NULL,
+        data_inicio DATE NOT NULL,
+        data_fim DATE NOT NULL
+        )
+    `);
+
+    db.run(`
+       CREATE TABLE IF NOT EXISTS faq (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+        pergunta TEXT NOT NULL,
+        resposta TEXT NOT NULL
+       ) 
+    `);
+});
 
 module.exports = db;
