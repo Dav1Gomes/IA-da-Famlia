@@ -46,6 +46,12 @@ const Navbar = ({ onToggleDarkMode, onFontSizeChange }) => {
   const handleEnviarFeedback = () => {
     console.log("Nota:", nota);
     console.log("Mensagem:", mensagem);
+    
+    fetch('http://localhost:5001/api/notas', {
+      method: 'POST', headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({ nota: nota, comentario: mensagem })
+    });
+
     setOpenFeedback(false);
     setNota(null);
     setMensagem("");

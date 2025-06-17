@@ -9,6 +9,7 @@ import logoprefeitura from '../img/logoprefeitura.png';
 const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isNewsExpanded, setIsNewsExpanded] = useState(false);
+    const [noticias, setNoticias] = useState([]);
     const [chats, setChats] = useState([]);
     const userId = sessionStorage.getItem('userId');
 
@@ -25,14 +26,31 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
         const newId = chats.length > 0 ? chats[chats.length - 1].id + 1 : 1;
         const newChat = { id: newId, title: `Chat ${newId}` };
         setChats(prevChats => [...prevChats, newChat]);
-        
-        fetch('/api/chats', { method: 'POST', body: JSON.stringify({ user_id: userId, title: newChat.title }) });
+        const payload = { title: userId ? 'Novo chat' : 'Chat anônimo' };
+
+        if (userId != null) {
+            payload.user_id = userId;
+        }
+
+        fetch('http://localhost:5001/api/chats', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Chat criado:', data);
+            // atualizar estado, etc.
+        })
+        .catch(err => console.error('Erro ao criar chat:', err));
     };
 
     const handleRemoveChat = (id) => {
         setChats(prevChats => prevChats.filter(chat => chat.id !== id));
 
-        fetch(`/api/chats/${id}`, { method: 'DELETE' });
+        fetch(`http://localhost:5001/api/chats/${id}`, { method: 'DELETE' });
     };
 
     useEffect(() => {
@@ -40,14 +58,19 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
             const initialChat = { id: 1, title: 'Chat 1' };
             setChats([initialChat]);
             setSelectedChatId(1);
-
-            fetch('/api/chats', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: userId, title: initialChat.title })
+        }else{
+            fetch(`http://localhost:5001/api/chats?user_id=${userId}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
             });
         }
-    }, []);
+        
+        
+        fetch('http://localhost:5001/api/conteudos')
+        .then(res => res.json())
+        .then(data => setNoticias(data))
+        .catch(err => console.error('Erro ao carregar contéudos', err));
+    }, [chats.length, userId, setSelectedChatId, setChats, setNoticias]);
 
     return (
         <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -134,7 +157,15 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
                                     </IconButton>
                                     <h3>Notícias</h3>
                                     <div className="news-items">
-                                        <h1>Aqui vão ficar as notícias</h1>
+                                        {noticias.length === 0 ?(
+                                            <p>Sem notícias no momento</p>):(
+                                                noticias.map((noticia, idx) => (
+                                                    <div key={idx} className='noticia'>
+                                                        <h4>{noticia.titulo}</h4>
+                                                        <p>{noticia.descricao}</p>
+                                                    </div>
+                                                ))
+                                        )}
                                     </div>
                                 </div>
                             )}
