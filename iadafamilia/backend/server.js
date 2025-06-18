@@ -44,18 +44,7 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-app.post('/api/chats', async (req, res) => {
-    const { user_id, title } = req.body;
-    try {
-        const result = await db.query(
-            'INSERT INTO chats (user_id, title) VALUES ($1, $2) RETURNING *',
-            [user_id, title]
-        );
-        res.status(201).json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+
 app.delete('/api/chats/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -66,19 +55,41 @@ app.delete('/api/chats/:id', async (req, res) => {
     }
 });
 
-app.put('/api/chats/:id', async (req, res) => {
+app.post('/api/chats', (req, res) => {
+    const { title, messages } = req.body;
+
+    const query = `INSERT INTO chats (title, messages) VALUES (?, ?)`;
+
+    db.run(query, [title, JSON.stringify(messages)], function (err) {
+        if (err) {
+            console.error('Erro ao criar chat:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ id: this.lastID });
+    });
+});
+
+
+
+app.put('/api/chats/:id', (req, res) => {
     const { id } = req.params;
     const { messages } = req.body;
-    try {
-        const result = await db.query(
-            'UPDATE chats SET messages = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
-            [JSON.stringify(messages), id]
-        );
-        res.status(200).json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    
+    const query = `UPDATE chats SET messages = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+
+    db.run(query, [JSON.stringify(messages), id], function (err) {
+        if (err) {
+            console.error('Erro ao atualizar chat:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Chat não encontrado' });
+        }
+
+        res.status(200).json({ success: true });
+    });
 });
+
 
 app.get('/api/chats/user/:user_id', async (req, res) => {
     const { user_id } = req.params;
@@ -139,6 +150,66 @@ app.delete('/api/faq/:id',  async (req, res) => {
     }
     console.log(`Mensagem de id: ${id} excluida com sucesso!`);
     res.status(200).json({ message: 'FAQ excluída com sucesso.' });
+  });
+});
+
+app.post('/api/notas', (req, res) => {
+    const { nota, comentario } = req.body;
+    const query = `INSERT INTO notas (nota, comentario) VALUES (?, ?)`;
+
+    db.run(query, [nota, comentario], function (err) {
+        if (err) {
+            console.error('Erro ao adicionar FAQ:', err.message);
+            return res.status(500).json({ message: 'Erro ao registrar FAQ.' });
+        }
+        res.status(201).json({ id: this.lastID, nota, comentario });
+    });
+});
+
+app.get('/api/notas', (req, res)=>{
+    db.all(`SELECT nota, COUNT(*) AS quantidade FROM notas GROUP BY nota ORDER BY nota`, (err, rows) => {
+        if (err) {
+            console.error('Erro ao buscar FAQs:', err.message);
+            return res.status(500).json({ message: 'Erro ao buscar FAQs.' });
+    }
+    res.status(200).json(rows);
+    });
+});
+
+app.post('/api/conteudos', (req, res) => {
+    const {titulo, descricao, data_inicio, data_fim} = req.body;
+
+    const query = `INSERT INTO conteudos(titulo, descricao, data_inicio, data_fim) VALUES(?, ?, ?, ?)`;
+
+    db.run(query, [titulo, descricao, data_inicio, data_fim], function(err){
+        if(err){
+            console.error('Erro ao adicionar conteudo:', err.message);
+            return res.status(500).json({message: 'Erro ao registrar conteudo.'})
+        }
+        res.status(201).json({ id: this.lastID, titulo})
+    });
+});
+
+app.get('/api/conteudos', (req, res) =>{
+    db.all(`SELECT * FROM conteudos`,[], (err, rows) =>{
+        if(err){
+            console.error('Erro ao buscar contéudos:', err.message);
+            return res.status(500).json({message: 'Erro ao buscar conteudos.'})
+        }
+        res.json(rows);
+    });
+});
+
+app.get('/api/chats_dia', (req, res) => {
+  const sql = `SELECT strftime('%w', created_at) AS dia_semana,
+      COUNT(*) AS total FROM chats GROUP BY dia_semana `;
+  
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar chats:', err);
+      return res.status(500).json({ error: 'Erro ao buscar chats' });
+    }
+    res.json(rows);
   });
 });
 

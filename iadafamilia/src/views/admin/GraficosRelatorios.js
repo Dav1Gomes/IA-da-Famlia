@@ -1,28 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import '../../styles/admin/AdminPrincipal.css';
 import '../../styles/admin/GraficosRelatorios.css';
 
-const atendimentosData = [
-  { name: 'Seg', atendimentos: 12 },
-  { name: 'Ter', atendimentos: 19 },
-  { name: 'Qua', atendimentos: 7 },
-  { name: 'Qui', atendimentos: 14 },
-  { name: 'Sex', atendimentos: 20 },
-];
-
-const avaliacaoData = [
-  { tipo: '1 - Péssimo', quantidade: 3 },
-  { tipo: '2 - Ruim', quantidade: 7 },
-  { tipo: '3 - Ok', quantidade: 15 },
-  { tipo: '4 - Bom', quantidade: 30 },
-  { tipo: '5 - Excelente', quantidade: 45 },
-];
+const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 
 const GraficosRelatorios = () => {
   const navigate = useNavigate();
+  const [avaliacaoData, setNotas] = useState([]);
+  const [atendimentosData, setAtendimentosData] = useState([]);
+  
+  useEffect(() => {
+    fetch('http://localhost:5001/api/notas') 
+        .then(res => res.json())
+        .then(data => {
+          const tNotas = [1, 2, 3, 4, 5].map(n => {
+            const found = data.find(item => item.nota === n);
+            return {
+              tipo: `${n} - ${['Péssimo', 'Ruim', 'Ok', 'Bom', 'Excelente'][n - 1]}`,
+              quantidade: found ? found.quantidade : 0
+            };
+          });
+          setNotas(tNotas);
+        })
+        .catch(err => console.error(err));
+
+
+    fetch('http://localhost:5001/api/chats_dia')
+        .then(res => res.json())
+        .then(data => {
+          const format = diasSemana.map((dia, idx) =>{
+            const found = data.find(d => Number(d.dia_semana) === idx);
+            return { name: dia, atendimentos: found ? found.total : 0};
+          });
+          setAtendimentosData(format);
+        })
+    }, []);
 
   return (
     <Box className="admin-page">

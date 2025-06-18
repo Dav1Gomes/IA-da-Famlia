@@ -13,8 +13,12 @@ INTENT_MAP = {
 }
 
 def detectar_intencao(frase):
-    inputs = tokenizer(frase, return_tensors="pt")
-    outputs = model(**inputs)
-    logits = outputs.logits
-    predicted_class = torch.argmax(logits, dim=1).item()
-    return predicted_class, INTENT_MAP.get(predicted_class, "Intenção desconhecida")
+    frase = frase.lower()
+    if any(palavra in frase for palavra in ["agendar", "marcar", "consulta nova"]):
+        return 0, "Agendar consulta"
+    elif any(palavra in frase for palavra in ["cancelar", "desmarcar"]):
+        return 1, "Cancelar consulta"
+    elif any(palavra in frase for palavra in ["remarcar", "mudar horário", "trocar data"]):
+        return 2, "Remarcar consulta"
+    else:
+        return 3, "Dúvida geral"

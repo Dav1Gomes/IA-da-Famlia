@@ -30,6 +30,10 @@ const LancarConteudo = () => {
       return;
     }
   
+    fetch('http://localhost:5001/api/conteudos', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ titulo: titulo, descricao: descricao, data_inicio: dataInicio, data_fim: dataFim })
+    });
+
     setConteudos([...conteudos, { titulo, descricao, dataInicio, dataFim }]);
     setTitulo('');
     setDescricao('');
