@@ -22,9 +22,10 @@ db.serialize(() => {
     db.run(`
         CREATE TABLE IF NOT EXISTS chats (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
+            user_id INTEGER,
             title TEXT NOT NULL,
-            messages TEXT DEFAULT '[]', -- Armazena mensagens como JSON
+            -- messages TEXT DEFAULT '[]',  Armazena mensagens como JSON
+            messages TEXT, -- Temporario
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE

@@ -44,32 +44,6 @@ app.post('/api/login', (req, res) => {
     });
 });
 
-app.post('/api/chats', async (req, res) => {
-    const { user_id, title } = req.body;
-
-    try {
-        const query = user_id ? 'INSERT INTO chats (user_id, title) VALUES (?, ?)' 
-        : 'INSERT INTO chats (title) VALUES (?)';
-    
-            const params = user_id ? [user_id, title.trim()] : [title.trim()];
-
-        db.run(query, params, function (err) {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-
-            db.get('SELECT * FROM chats WHERE id = ?', [this.lastID], (err, row) => {
-                if (err) {
-                    return res.status(500).json({ error: err.message });
-                }
-                res.status(201).json(row);
-            });
-        });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
 app.delete('/api/chats/:id', async (req, res) => {
     const { id } = req.params;
@@ -81,19 +55,41 @@ app.delete('/api/chats/:id', async (req, res) => {
     }
 });
 
-app.put('/api/chats/:id', async (req, res) => {
+app.post('/api/chats', (req, res) => {
+    const { title, messages } = req.body;
+
+    const query = `INSERT INTO chats (title, messages) VALUES (?, ?)`;
+
+    db.run(query, [title, JSON.stringify(messages)], function (err) {
+        if (err) {
+            console.error('Erro ao criar chat:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        res.status(201).json({ id: this.lastID });
+    });
+});
+
+
+
+app.put('/api/chats/:id', (req, res) => {
     const { id } = req.params;
     const { messages } = req.body;
-    try {
-        const result = await db.query(
-            'UPDATE chats SET messages = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
-            [JSON.stringify(messages), id]
-        );
-        res.status(200).json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    
+    const query = `UPDATE chats SET messages = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`;
+
+    db.run(query, [JSON.stringify(messages), id], function (err) {
+        if (err) {
+            console.error('Erro ao atualizar chat:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'Chat não encontrado' });
+        }
+
+        res.status(200).json({ success: true });
+    });
 });
+
 
 app.get('/api/chats/user/:user_id', async (req, res) => {
     const { user_id } = req.params;

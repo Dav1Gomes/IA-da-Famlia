@@ -32,7 +32,7 @@ const GraficosRelatorios = () => {
         .then(res => res.json())
         .then(data => {
           const format = diasSemana.map((dia, idx) =>{
-            const found = data.find(d => Number(d.diasSemana) === idx);
+            const found = data.find(d => Number(d.dia_semana) === idx);
             return { name: dia, atendimentos: found ? found.total : 0};
           });
           setAtendimentosData(format);

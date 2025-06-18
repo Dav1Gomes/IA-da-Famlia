@@ -26,25 +26,6 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
         const newId = chats.length > 0 ? chats[chats.length - 1].id + 1 : 1;
         const newChat = { id: newId, title: `Chat ${newId}` };
         setChats(prevChats => [...prevChats, newChat]);
-        const payload = { title: userId ? 'Novo chat' : 'Chat anônimo' };
-
-        if (userId != null) {
-            payload.user_id = userId;
-        }
-
-        fetch('http://localhost:5001/api/chats', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log('Chat criado:', data);
-            // atualizar estado, etc.
-        })
-        .catch(err => console.error('Erro ao criar chat:', err));
     };
 
     const handleRemoveChat = (id) => {
