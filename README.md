@@ -1,7 +1,7 @@
 # 🤖 IA da Família - SUS de Juiz de Fora  
 **Curso:** Análise e Desenvolvimento de Sistemas  
 **Líder do Projeto:** Davi Gomes de Carvalho  
-**Equipe:** Ana Beatriz, Iago Domingues, Julio Almeida, Julio Chiavegatto, Mateus Sarlo, Thiago Schmitz Correa  
+**Equipe:** Ana Beatriz, Iago Domingues, Julio Chiavegatto, Mateus Sarlo, Thiago Schmitz 
 
 ---
 
@@ -31,27 +31,20 @@
 
 ---
 
-## 🚀 **Tecnologias Utilizadas**  
+## 🚀 **Tecnologias Utilizadas**
 
-### **Frontend** (Interface do usuário)  
-🔹 ![React](https://img.shields.io/badge/React-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=black)  
-🔹 ![Material UI](https://img.shields.io/badge/Material%20UI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)  
-🔹 ![React Router](https://img.shields.io/badge/React%20Router-%23CA4245.svg?style=for-the-badge&logo=react-router&logoColor=white)  
+**Frontend:**  
+🔹 ![React](https://img.shields.io/badge/React-%2361DAFB.svg?style=for-the-badge&logo=react&logoColor=black)  ![Material UI](https://img.shields.io/badge/Material%20UI-%230081CB.svg?style=for-the-badge&logo=mui&logoColor=white)  ![React Router](https://img.shields.io/badge/React%20Router-%23CA4245.svg?style=for-the-badge&logo=react-router&logoColor=white)  
 
-### **Backend** (Servidor e API)  
-🔹 ![Node.js](https://img.shields.io/badge/Node.js-%23339933.svg?style=for-the-badge&logo=node.js&logoColor=white)  
-🔹 ![Express](https://img.shields.io/badge/Express.js-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)  
-🔹 ![SQLite](https://img.shields.io/badge/SQLite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)  
-🔹 ![Bcrypt](https://img.shields.io/badge/Bcrypt-%2300A5E0.svg?style=for-the-badge)  
-🔹 ![Dotenv](https://img.shields.io/badge/Dotenv-%23E34F26.svg?style=for-the-badge)  
+**Backend:**  
+🔹 ![Node.js](https://img.shields.io/badge/Node.js-%23339933.svg?style=for-the-badge&logo=node.js&logoColor=white)  ![Express.js](https://img.shields.io/badge/Express.js-%23000000.svg?style=for-the-badge&logo=express&logoColor=white)  ![SQLite](https://img.shields.io/badge/SQLite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)  ![Bcrypt](https://img.shields.io/badge/Bcrypt-%2300A5E0.svg?style=for-the-badge)  ![Dotenv](https://img.shields.io/badge/Dotenv-%23E34F26.svg?style=for-the-badge)  
 
-### **Inteligência Artificial**  
-🔹 ![Dialogflow](https://img.shields.io/badge/Dialogflow-%23FF9800.svg?style=for-the-badge&logo=dialogflow&logoColor=white)  
-🔹 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white) *(Fase 2)*  
+**Inteligência Artificial:**  
+🔹 ![Python](https://img.shields.io/badge/Python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white)  
 
-### **Comunicação**  
-🔹 ![Twilio](https://img.shields.io/badge/Twilio-%23F22F46.svg?style=for-the-badge&logo=twilio&logoColor=white) *(WhatsApp - Fase 2)*  
-🔹 ![Telegram](https://img.shields.io/badge/Telegram%20Bot-%2326A5E4.svg?style=for-the-badge&logo=telegram&logoColor=white) *(Fase 2)*  
+**Comunicação:**  
+🔹 ![Twilio](https://img.shields.io/badge/Twilio-%23F22F46.svg?style=for-the-badge&logo=twilio&logoColor=white)  ![Telegram Bot](https://img.shields.io/badge/Telegram%20Bot-%2326A5E4.svg?style=for-the-badge&logo=telegram&logoColor=white)  (Integração futura).
+
 
 ---
 
@@ -83,27 +76,34 @@ O backend rodará em http://localhost:5000/
 cd iadafamilia
 npm run dev
 ```
-Esse comando irá rodar o frontend, backend e o chatbot.
+Esse comando irá rodar o frontend e o backend.
 
+### **5️⃣ Iniciar o chatbot**
+``` bash
+cd iadafamilia\chatbot
+python app.py
+```
+<p>Certifique-se que você tenha a versão do python 3.11.13, veja também o arquivo requirements.txt para baixar as extensões necessárias.
+  
 ---
 
-## 🔨 **O que já foi implementado?**  
+## 🔨 **O que já foi implementado?**
 
-✔ Estruturação inicial do projeto (frontend e backend).  
-✔ Interface com **React.js** e **Material UI**.  
-✔ Chatbot básico com **Dialogflow**.  
-✔ Configuração do banco de dados **SQLite**.  
-✔ API inicial com **Express.js**.  
+✔ Estruturação inicial do projeto (frontend e backend)  
+✔ Interface com **React.js** e **Material UI**  
+✔ API RESTful com **Express.js** e **SQLite**  
+✔ Endpoints de autenticação de usuários  
+✔ Painel administrativo para gestão de IA e conteúdos  
+✔ Chatbot integrado (Python + Node)  
+✔ Melhor experiência do chatbot  
+✔ Dashboards com **dados em tempo real**
 
+## 🚧 **Próximas Implementações**
 
+🔧 Integração com **WhatsApp** e **Telegram**  
+🔧 Deploy em nuvem  
 
-## 🚧 **Próximas Implementações**  
-
-🔧 Criar endpoints para autenticação de usuários.  
-🔧 Desenvolver um painel administrativo.  
-🔧 Melhorar a experiência do chatbot.  
-🔧 Implementar integração com **WhatsApp e Telegram**.  
-🔧 Criar dashboards com **dados em tempo real**.  
+  
 
 ---
 
