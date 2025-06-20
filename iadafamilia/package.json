@@ -27,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently \"npm start\" \"node backend/server.js\" \"python chatbot/app.py\""
+    "dev": "concurrently \"npm start\" \"node backend/server.js\""
   },
   "eslintConfig": {
     "extends": [

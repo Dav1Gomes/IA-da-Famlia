@@ -5,6 +5,11 @@ def get_chatbot():
         'FamilIA',
         storage_adapter='chatterbot.storage.SQLStorageAdapter',
         logic_adapters=[
+            {
+                'import_path': 'chatterbot.logic.BestMatch',
+                'default_response': 'Desculpe, não entendi. Pode repetir?',
+                'maximum_similarity_threshold': 0.90
+            },
             'chatterbot.logic.MathematicalEvaluation',
             'chatterbot.logic.TimeLogicAdapter'
         ],

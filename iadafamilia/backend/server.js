@@ -238,6 +238,31 @@ app.delete('/api/conteudos/:id', (req, res) => {
 });
 
 
+app.post('/api/chat', (req, res) => {
+  const { message } = req.body;
+  const texto = message.trim();
+
+  db.get(
+    `SELECT resposta 
+       FROM faq 
+      WHERE pergunta = ?`,
+    [texto],
+    (err, row) => {
+      if (err) {
+        console.error('Erro ao consultar FAQ:', err.message);
+        return res.status(500).json({ error: 'Erro interno.' });
+      }
+
+      if (row) {
+        return res.json({ response: row.resposta });
+      } else {
+        return res.json({ response: 'Desculpe, ainda não sei responder isso.' });
+      }
+    }
+  );
+});
+
+
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
