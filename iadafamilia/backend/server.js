@@ -218,6 +218,26 @@ app.get('/api/chats_dia', (req, res) => {
 });
 
 
+app.delete('/api/conteudos/:id', (req, res) => {
+  const { id } = req.params;
+
+  db.run(
+    `DELETE FROM conteudos WHERE id = ?`,
+    [id],
+    function(err) {
+      if (err) {
+        console.error('Erro ao excluir conteúdo:', err.message);
+        return res.status(500).json({ message: 'Erro ao excluir conteúdo.' });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: 'Conteúdo não encontrado.' });
+      }
+      res.status(200).json({ message: 'Conteúdo excluído com sucesso.' });
+    }
+  );
+});
+
+
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

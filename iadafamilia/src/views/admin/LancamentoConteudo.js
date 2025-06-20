@@ -1,5 +1,17 @@
-import React, { useState } from 'react';
-import { Box, TextField, Typography, Button, Paper, Grid, Snackbar, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  TextField,
+  Typography,
+  Button,
+  Paper,
+  Grid,
+  Snackbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/admin/AdminPrincipal.css';
 import '../../styles/admin/LancamentoConteudo.css';
@@ -15,7 +27,23 @@ const LancarConteudo = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [conteudoToDelete, setConteudoToDelete] = useState(null);
+  const [conteudoToDelete, setConteudoToDelete] = useState(null); 
+
+  useEffect(() => {
+    fetch('http://localhost:5001/api/conteudos')
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map(item => ({
+          id: item.id,
+          titulo: item.titulo,
+          descricao: item.descricao,
+          dataInicio: item.data_inicio,
+          dataFim: item.data_fim
+        }));
+        setConteudos(mapped);
+      })
+      .catch(err => console.error('Erro ao carregar conteúdos', err));
+  }, []);
 
   const publicar = () => {
     if (!titulo.trim() || !descricao.trim() || !dataInicio || !dataFim) {
@@ -23,38 +51,70 @@ const LancarConteudo = () => {
       setOpenSnackbar(true);
       return;
     }
-  
     if (new Date(dataFim) < new Date(dataInicio)) {
       setSnackbarMessage('A data final não pode ser antes da data inicial!');
       setOpenSnackbar(true);
       return;
     }
-  
-    fetch('http://localhost:5001/api/conteudos', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ titulo: titulo, descricao: descricao, data_inicio: dataInicio, data_fim: dataFim })
-    });
 
-    setConteudos([...conteudos, { titulo, descricao, dataInicio, dataFim }]);
-    setTitulo('');
-    setDescricao('');
-    setDataInicio('');
-    setDataFim('');
-    setSnackbarMessage('Conteúdo adicionado com sucesso!');
-    setOpenSnackbar(true);
+    fetch('http://localhost:5001/api/conteudos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        titulo,
+        descricao,
+        data_inicio: dataInicio,
+        data_fim: dataFim
+      })
+    })
+      .then(res => res.json())
+      .then(newItem => {
+        setConteudos(prev => [
+          ...prev,
+          {
+            id: newItem.id,
+            titulo: newItem.titulo,
+            descricao: newItem.descricao,
+            dataInicio: newItem.data_inicio,
+            dataFim: newItem.data_fim
+          }
+        ]);
+        setTitulo('');
+        setDescricao('');
+        setDataInicio('');
+        setDataFim('');
+        setSnackbarMessage('Conteúdo adicionado com sucesso!');
+        setOpenSnackbar(true);
+      })
+      .catch(err => {
+        console.error('Erro ao publicar', err);
+        setSnackbarMessage('Erro ao adicionar conteúdo.');
+        setOpenSnackbar(true);
+      });
   };
 
-  const pedirExclusao = (index) => {
-    setConteudoToDelete(index);
+  const pedirExclusao = id => {
+    setConteudoToDelete(id);
     setDialogOpen(true);
   };
 
   const confirmarExclusao = () => {
-    if (conteudoToDelete !== null) {
-      const novaLista = [...conteudos];
-      novaLista.splice(conteudoToDelete, 1);
-      setConteudos(novaLista);
-      setSnackbarMessage('Conteúdo excluído com sucesso!');
-      setOpenSnackbar(true);
+    if (conteudoToDelete != null) {
+      fetch(`http://localhost:5001/api/conteudos/${conteudoToDelete}`, {
+        method: 'DELETE'
+      })
+        .then(() => {
+          setConteudos(prev =>
+            prev.filter(item => item.id !== conteudoToDelete)
+          );
+          setSnackbarMessage('Conteúdo excluído com sucesso!');
+          setOpenSnackbar(true);
+        })
+        .catch(err => {
+          console.error('Erro ao excluir', err);
+          setSnackbarMessage('Erro ao excluir conteúdo.');
+          setOpenSnackbar(true);
+        });
     }
     setDialogOpen(false);
     setConteudoToDelete(null);
@@ -65,7 +125,7 @@ const LancarConteudo = () => {
     setConteudoToDelete(null);
   };
 
-  const formatarData = (data) => {
+  const formatarData = data => {
     if (!data) return '';
     const [ano, mes, dia] = data.split('-');
     return `${dia}/${mes}/${ano}`;
@@ -73,20 +133,22 @@ const LancarConteudo = () => {
 
   return (
     <Box className="admin-page">
-      <Typography variant="h4" className="admin-title">Lançar Conteúdo</Typography>
+      <Typography variant="h4" className="admin-title">
+        Lançar Conteúdo
+      </Typography>
 
       <Box className="form-conteudo">
         <TextField
           label="Título"
           value={titulo}
-          onChange={(e) => setTitulo(e.target.value)}
+          onChange={e => setTitulo(e.target.value)}
           fullWidth
           sx={{ mb: 2 }}
         />
         <TextField
           label="Descrição"
           value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
+          onChange={e => setDescricao(e.target.value)}
           fullWidth
           multiline
           rows={4}
@@ -98,7 +160,7 @@ const LancarConteudo = () => {
               label="Data de Início"
               type="date"
               value={dataInicio}
-              onChange={(e) => setDataInicio(e.target.value)}
+              onChange={e => setDataInicio(e.target.value)}
               fullWidth
               InputLabelProps={{ shrink: true }}
             />
@@ -108,32 +170,44 @@ const LancarConteudo = () => {
               label="Data Final"
               type="date"
               value={dataFim}
-              onChange={(e) => setDataFim(e.target.value)}
+              onChange={e => setDataFim(e.target.value)}
               fullWidth
               InputLabelProps={{ shrink: true }}
             />
           </Grid>
         </Grid>
-        <Button variant="contained" sx={{ backgroundColor: 'var(--verde-agua)' }} onClick={publicar}>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: 'var(--verde-agua)' }}
+          onClick={publicar}
+        >
           Publicar
         </Button>
       </Box>
 
       <Box className="conteudos-publicados">
-        {conteudos.map((item, idx) => (
-          <Paper key={idx} className="conteudo-item">
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {conteudos.map(item => (
+          <Paper key={item.id} className="conteudo-item">
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
               <Box>
                 <Typography variant="h6">{item.titulo}</Typography>
                 <Typography variant="body1">{item.descricao}</Typography>
                 <Typography variant="body2" sx={{ mt: 1 }}>
-                  <strong>Início:</strong> {formatarData(item.dataInicio)} — <strong>Final:</strong> {formatarData(item.dataFim)}
+                  <strong>Início:</strong> {formatarData(item.dataInicio)} —{' '}
+                  <strong>Final:</strong> {formatarData(item.dataFim)}
                 </Typography>
               </Box>
               <Button
                 variant="contained"
                 className="delete-button"
-                onClick={() => pedirExclusao(idx)}
+                sx={{ backgroundColor: 'var(--vermelho)' }}
+                onClick={() => pedirExclusao(item.id)}
               >
                 Excluir
               </Button>
@@ -146,7 +220,11 @@ const LancarConteudo = () => {
         <Button className="button-voltar" onClick={() => navigate('/admin')}>
           Voltar
         </Button>
-        <img src={require('../../img/logoprefeitura2.png')} alt="Logo Prefeitura" className="footer-logo" />
+        <img
+          src={require('../../img/logoprefeitura2.png')}
+          alt="Logo Prefeitura"
+          className="footer-logo"
+        />
       </footer>
 
       <Snackbar
@@ -157,17 +235,21 @@ const LancarConteudo = () => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       />
 
-      <Dialog
-        open={dialogOpen}
-        onClose={cancelarExclusao}
-      >
+      <Dialog open={dialogOpen} onClose={cancelarExclusao}>
         <DialogTitle>Confirmar exclusão</DialogTitle>
         <DialogContent>
-          <Typography>Tem certeza que deseja excluir este conteúdo?</Typography>
+          <Typography>
+            Tem certeza que deseja excluir este conteúdo?
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={cancelarExclusao}>Cancelar</Button>
-          <Button onClick={confirmarExclusao} sx={{ color: 'var(--vermelho)' }}>Excluir</Button>
+          <Button
+            onClick={confirmarExclusao}
+            sx={{ color: 'var(--vermelho)' }}
+          >
+            Excluir
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
