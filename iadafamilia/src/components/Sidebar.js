@@ -58,18 +58,17 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
             const initialChat = { id: 1, title: 'Chat 1' };
             setChats([initialChat]);
             setSelectedChatId(1);
-        }else{
+        } else {
             fetch(`http://localhost:5001/api/chats?user_id=${userId}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
         }
-        
-        
+
         fetch('http://localhost:5001/api/conteudos')
-        .then(res => res.json())
-        .then(data => setNoticias(data))
-        .catch(err => console.error('Erro ao carregar contéudos', err));
+            .then(res => res.json())
+            .then(data => setNoticias(data))
+            .catch(err => console.error('Erro ao carregar contéudos', err));
     }, [chats.length, userId, setSelectedChatId, setChats, setNoticias]);
 
     return (
@@ -93,15 +92,20 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
                         <h3 style={{ fontFamily: 'var(--font-titles)' }}>Seus Chats</h3>
                         <ul>
                             {chats.map((chat) => (
-                                <li 
-                                    key={chat.id} 
-                                    onClick={() => setSelectedChatId(chat.id)} 
+                                <li
+                                    key={chat.id}
+                                    onClick={() => setSelectedChatId(chat.id)}
                                     className={`chat-item ${selectedChatId === chat.id ? 'selected' : ''}`}
-                                    style={{ fontFamily: 'var(--font-body)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                                    style={{
+                                        fontFamily: 'var(--font-body)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}
                                 >
                                     {chat.title}
                                     <IconButton
-                                        onClick={(e) =>{
+                                        onClick={(e) => {
                                             e.stopPropagation();
                                             handleRemoveChat(chat.id);
                                         }}
@@ -141,38 +145,54 @@ const Sidebar = ({ onQuestionClick, selectedChatId, setSelectedChatId }) => {
                             </ul>
                         </div>
 
-                        <div className={`noticias-container ${isNewsExpanded ? 'expanded' : ''}`} onClick={toggleNews}>
+                        <div
+                            className={`noticias-container ${isNewsExpanded ? 'expanded' : ''}`}
+                            onClick={toggleNews}
+                        >
                             {!isNewsExpanded ? (
                                 <div className="noticias-button">Notícias</div>
                             ) : (
-                                <div className="noticias-content">
-                                    <IconButton 
+                                <div className="noticias-content" style={{ color: 'inherit' }}>
+                                    <IconButton
                                         className="close-news-button"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setIsNewsExpanded(false);
                                         }}
+                                        sx={{ color: 'inherit' }}
                                     >
                                         <CloseIcon />
                                     </IconButton>
-                                    <h3>Notícias</h3>
+                                    <h3 style={{ fontFamily: 'var(--font-titles)', color: 'inherit' }}>Notícias</h3>
                                     <div className="news-items">
-                                        {noticias.length === 0 ?(
-                                            <p>Sem notícias no momento</p>):(
-                                                noticias.map((noticia, idx) => (
-                                                    <div key={idx} className='noticia'>
-                                                        <h4>{noticia.titulo}</h4>
-                                                        <p>{noticia.descricao}</p>
-                                                    </div>
-                                                ))
+                                        {noticias.length === 0 ? (
+                                            <p style={{ fontFamily: 'var(--font-body)', color: 'inherit' }}>
+                                                Sem notícias no momento
+                                            </p>
+                                        ) : (
+                                            noticias.map((noticia, idx) => (
+                                                <div key={idx} className="noticia">
+                                                    <h4 style={{ fontFamily: 'var(--font-titles)', color: 'inherit' }}>
+                                                        {noticia.titulo}
+                                                    </h4>
+                                                    <p style={{ fontFamily: 'var(--font-body)', color: 'inherit' }}>
+                                                        {noticia.descricao}
+                                                    </p>
+                                                </div>
+                                            ))
                                         )}
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        <div className='logo'>
-                            <img src={logoprefeitura} alt='Logo da Prefeitura' className='logo-prefeitura' width={"240px"} />
+                        <div className="logo">
+                            <img
+                                src={logoprefeitura}
+                                alt="Logo da Prefeitura"
+                                className="logo-prefeitura"
+                                width="240px"
+                            />
                         </div>
                     </div>
                 </>
