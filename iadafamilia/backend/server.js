@@ -157,6 +157,22 @@ app.delete('/api/faq/:id',  async (req, res) => {
   });
 });
 
+app.put('/api/faq/:id', (req, res) => {
+  const { id } = req.params;
+  const { pergunta, resposta } = req.body;
+  const query = `UPDATE faq SET pergunta = ?, resposta = ? WHERE id = ?`;
+  db.run(query, [pergunta, resposta, id], function(err) {
+    if (err) {
+      console.error('Erro ao atualizar FAQ:', err.message);
+      return res.status(500).json({ message: 'Erro ao atualizar FAQ.' });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'FAQ não encontrada.' });
+    }
+    res.status(200).json({ id: Number(id), pergunta, resposta });
+  });
+});
+
 app.post('/api/notas', (req, res) => {
     const { nota, comentario } = req.body;
     const query = `INSERT INTO notas (nota, comentario) VALUES (?, ?)`;
@@ -179,6 +195,24 @@ app.get('/api/notas', (req, res)=>{
     res.status(200).json(rows);
     });
 });
+
+app.get('/api/notas/comentarios', (req, res) => {
+  const sql = `
+    SELECT id, nota, comentario
+      FROM notas
+    WHERE comentario IS NOT NULL
+    ORDER BY id DESC
+    LIMIT 10
+  `;
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar comentários:', err.message);
+      return res.status(500).json({ message: 'Erro ao buscar comentários.' });
+    }
+    res.status(200).json(rows);
+  });
+});
+
 
 app.post('/api/conteudos', (req, res) => {
     const {titulo, descricao, data_inicio, data_fim} = req.body;
@@ -235,6 +269,25 @@ app.delete('/api/conteudos/:id', (req, res) => {
       res.status(200).json({ message: 'Conteúdo excluído com sucesso.' });
     }
   );
+});
+
+app.put('/api/conteudos/:id', (req, res) => {
+  const { id } = req.params;
+  const { titulo, descricao, data_inicio, data_fim } = req.body;
+  const query = `
+    UPDATE conteudos 
+       SET titulo = ?, descricao = ?, data_inicio = ?, data_fim = ?
+     WHERE id = ?`;
+  db.run(query, [titulo, descricao, data_inicio, data_fim, id], function(err) {
+    if (err) {
+      console.error('Erro ao atualizar conteúdo:', err.message);
+      return res.status(500).json({ message: 'Erro ao atualizar conteúdo.' });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ message: 'Conteúdo não encontrado.' });
+    }
+    res.status(200).json({ id: Number(id), titulo, descricao, data_inicio, data_fim });
+  });
 });
 
 

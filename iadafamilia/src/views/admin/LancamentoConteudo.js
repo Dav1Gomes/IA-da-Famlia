@@ -16,8 +16,9 @@ import { useNavigate } from 'react-router-dom';
 import '../../styles/admin/AdminPrincipal.css';
 import '../../styles/admin/LancamentoConteudo.css';
 
-const LancarConteudo = () => {
+const LancamentoConteudo = () => {
   const navigate = useNavigate();
+
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [dataInicio, setDataInicio] = useState('');
@@ -27,7 +28,14 @@ const LancarConteudo = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [conteudoToDelete, setConteudoToDelete] = useState(null); 
+  const [conteudoToDelete, setConteudoToDelete] = useState(null);
+
+  const [editId, setEditId] = useState(null);
+  const [editTitulo, setEditTitulo] = useState('');
+  const [editDescricao, setEditDescricao] = useState('');
+  const [editDataInicio, setEditDataInicio] = useState('');
+  const [editDataFim, setEditDataFim] = useState('');
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:5001/api/conteudos')
@@ -42,7 +50,11 @@ const LancarConteudo = () => {
         }));
         setConteudos(mapped);
       })
-      .catch(err => console.error('Erro ao carregar conteúdos', err));
+      .catch(err => {
+        console.error('Erro ao carregar conteúdos', err);
+        setSnackbarMessage('Erro ao carregar conteúdos.');
+        setOpenSnackbar(true);
+      });
   }, []);
 
   const publicar = () => {
@@ -97,16 +109,14 @@ const LancarConteudo = () => {
     setConteudoToDelete(id);
     setDialogOpen(true);
   };
-
   const confirmarExclusao = () => {
     if (conteudoToDelete != null) {
       fetch(`http://localhost:5001/api/conteudos/${conteudoToDelete}`, {
         method: 'DELETE'
       })
-        .then(() => {
-          setConteudos(prev =>
-            prev.filter(item => item.id !== conteudoToDelete)
-          );
+        .then(res => {
+          if (!res.ok) throw new Error();
+          setConteudos(prev => prev.filter(item => item.id !== conteudoToDelete));
           setSnackbarMessage('Conteúdo excluído com sucesso!');
           setOpenSnackbar(true);
         })
@@ -114,15 +124,54 @@ const LancarConteudo = () => {
           console.error('Erro ao excluir', err);
           setSnackbarMessage('Erro ao excluir conteúdo.');
           setOpenSnackbar(true);
+        })
+        .finally(() => {
+          setDialogOpen(false);
+          setConteudoToDelete(null);
         });
     }
+  };
+  const cancelarExclusao = () => {
     setDialogOpen(false);
     setConteudoToDelete(null);
   };
 
-  const cancelarExclusao = () => {
-    setDialogOpen(false);
-    setConteudoToDelete(null);
+  const abrirEdicao = item => {
+    setEditId(item.id);
+    setEditTitulo(item.titulo);
+    setEditDescricao(item.descricao);
+    setEditDataInicio(item.dataInicio);
+    setEditDataFim(item.dataFim);
+    setEditDialogOpen(true);
+  };
+  const salvarEdicao = () => {
+    fetch(`http://localhost:5001/api/conteudos/${editId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        titulo: editTitulo,
+        descricao: editDescricao,
+        data_inicio: editDataInicio,
+        data_fim: editDataFim
+      })
+    })
+      .then(res => {
+        if (!res.ok) throw new Error();
+        setConteudos(prev =>
+          prev.map(c =>
+            c.id === editId
+              ? { ...c, titulo: editTitulo, descricao: editDescricao, dataInicio: editDataInicio, dataFim: editDataFim }
+              : c
+          )
+        );
+        setSnackbarMessage('Conteúdo atualizado com sucesso!');
+        setOpenSnackbar(true);
+        setEditDialogOpen(false);
+      })
+      .catch(() => {
+        setSnackbarMessage('Erro ao atualizar conteúdo.');
+        setOpenSnackbar(true);
+      });
   };
 
   const formatarData = data => {
@@ -188,13 +237,7 @@ const LancarConteudo = () => {
       <Box className="conteudos-publicados">
         {conteudos.map(item => (
           <Paper key={item.id} className="conteudo-item">
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box>
                 <Typography variant="h6">{item.titulo}</Typography>
                 <Typography variant="body1">{item.descricao}</Typography>
@@ -203,14 +246,14 @@ const LancarConteudo = () => {
                   <strong>Final:</strong> {formatarData(item.dataFim)}
                 </Typography>
               </Box>
-              <Button
-                variant="contained"
-                className="delete-button"
-                sx={{ backgroundColor: 'var(--vermelho)' }}
-                onClick={() => pedirExclusao(item.id)}
-              >
-                Excluir
-              </Button>
+              <Box>
+                <Button variant="outlined" sx={{ mr: 1 }} onClick={() => abrirEdicao(item)}>
+                  Editar
+                </Button>
+                <Button variant="contained" color="error" onClick={() => pedirExclusao(item.id)}>
+                  Excluir
+                </Button>
+              </Box>
             </Box>
           </Paper>
         ))}
@@ -238,22 +281,60 @@ const LancarConteudo = () => {
       <Dialog open={dialogOpen} onClose={cancelarExclusao}>
         <DialogTitle>Confirmar exclusão</DialogTitle>
         <DialogContent>
-          <Typography>
-            Tem certeza que deseja excluir este conteúdo?
-          </Typography>
+          <Typography>Tem certeza que deseja excluir este conteúdo?</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={cancelarExclusao}>Cancelar</Button>
-          <Button
-            onClick={confirmarExclusao}
-            sx={{ color: 'var(--vermelho)' }}
-          >
+          <Button onClick={confirmarExclusao} sx={{ color: 'var(--vermelho)' }}>
             Excluir
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+        <DialogTitle>Editar Conteúdo</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Título"
+            value={editTitulo}
+            onChange={e => setEditTitulo(e.target.value)}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Descrição"
+            value={editDescricao}
+            onChange={e => setEditDescricao(e.target.value)}
+            fullWidth
+            multiline
+            rows={3}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Data Início"
+            type="date"
+            value={editDataInicio}
+            onChange={e => setEditDataInicio(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            label="Data Fim"
+            type="date"
+            value={editDataFim}
+            onChange={e => setEditDataFim(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialogOpen(false)}>Cancelar</Button>
+          <Button onClick={salvarEdicao}>Salvar</Button>
         </DialogActions>
       </Dialog>
     </Box>
   );
 };
 
-export default LancarConteudo;
+export default LancamentoConteudo;

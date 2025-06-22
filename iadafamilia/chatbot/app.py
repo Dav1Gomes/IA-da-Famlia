@@ -18,7 +18,7 @@ def detect_intent():
     #detectar a intenção base do usuario
     intent_id, intent_desc = detectar_intencao(message)
 
-    if intent_id == 0:  # Agendar
+    if intent_id == 0:  
         return jsonify({
             "intent": intent_desc,
             "response": "Perfeito! Para agendar sua consulta, me informe a data e o horário desejados."
